@@ -1,13 +1,13 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, current_app, abort
 from werkzeug.utils import secure_filename
-from dotenv import load_dotenv
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 from cloudinary.utils import cloudinary_url
 from cloudinary.uploader import upload
 from flask_sqlalchemy import SQLAlchemy
+import psycopg2
 from flask_migrate import Migrate
 from datetime import datetime
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -21,8 +21,12 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 kei = Flask(__name__, static_folder='projec', static_url_path='/static')
-kei.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'instance', 'site.db')
-kei.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+kei.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'DATABASE_URL',
+    'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'instance', 'site.db')
+)
+kei.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+kei.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 db = SQLAlchemy(kei)
 migrate = Migrate(kei, db)
 
