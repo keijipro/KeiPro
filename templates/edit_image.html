@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Editing{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="card">
+            <h1 class="card-title">Edit</h1>
+        </div>
+
+        <div class="card image-preview-card">
+            <div class="image-preview">
+                <img src="{{ image.secure_url }}" data-src="{{ image.secure_url }}" alt="Gimana Aman">
+            </div>
+            <p class="image-description">Deskripsi: {{ image.description }}</p>
+        </div>
+        
+        <div class="card edit-options-card">
+            <h3 class="card-subtitle">Rotasi Dan Efek</h3>
+            <div class="edit-actions">
+                <form method="post" action="{{ url_for('edit_image', image_id=image.id) }}" class="edit-form">
+                    <div class="feature-link-container">
+                        <button type="submit" name="action" value="rotate_90" class="btn btn-secondary">Putar 90°</button>
+                        <button type="submit" name="action" value="rotate_180" class="btn btn-secondary">Putar 180°</button>
+                        <button type="submit" name="action" value="rotate_270" class="btn btn-secondary">Putar 270°</button>
+                    </div>
+                </form>
+
+                <form method="post" action="{{ url_for('edit_image', image_id=image.id) }}" class="edit-form">
+                    <div class="feature-link-container">
+                        <button type="submit" name="action" value="sepia" class="btn btn-secondary">Filter Sepia</button>
+                        <button type="submit" name="action" value="grayscale" class="btn btn-secondary">Grayscale</button>
+                    </div>
+                </form>
+            </div>
+	</div>
+        <div class="card edit-options-card">
+            <div class="edit-actions">
+<h3> Pemotong Gambar</h3>
+        <div class="form-group">
+<form action="{{ url_for('edit_image', image_id=image.id) }}" method="POST">
+    <input type="hidden" name="action" value="crop">
+    <div class="mb-3">
+        <label for="x" class="form-label">X:</label>
+        <input type="number" class="form-control" name="x" value="0" required>
+    </div>
+</div>
+        <div class="form-group">
+        <label for="y" class="form-label">Y:</label>
+        <input type="number" class="form-control" name="y" value="0" required>
+    </div>
+        <div class="form-group">
+        <label for="width" class="form-label">Lebar:</label>
+        <input type="number" class="form-control" name="width" value="0" required>
+    </div>
+        <div class="form-group">
+        <label for="height" class="form-label">Tinggi:</label>
+        <input type="number" class="form-control" name="height" value="0" required>
+    </div>
+    <button type="submit" class="btn btn-secondary">Potong</button>
+</form></div></div>
+        <div class="card edit-options-card">
+            <div class="edit-actions">
+<h3>Watermark</h3>
+<form action="{{ url_for('edit_image', image_id=image.id) }}" method="POST">
+    <input type="hidden" name="action" value="watermark">
+    <div class="mb-3">
+        <label for="watermark_text" class="form-label">Teks Watermark:</label>
+        <input type="text" class="form-control" name="watermark_text" placeholder="Masukan teks watermark" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Send Watermark</button>
+</form>
+            </div>
+            </div>
+<div class="card">
+<p class="btn btn-secondary"><a href="{{ url_for('gallery') }}">Back</a></p>
+</div>
+    </div>
+{% endblock %}

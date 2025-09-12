@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Message {% endblock %}
+{% block content %}
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+	<div class="card">
+    <h1 class="card-title">Kirim Pesan</h1>
+        <div class="form-group">
+    <form action="{{ url_for('send_message') }}" method="POST">
+        <label for="recipient_username">Penerima:</label>
+    <input type="text" id="recipient_username" name="recipient_username" required>
+        <br><br>
+        <label for="content">Isi Pesan:</label>
+        <textarea id="content" name="content" required></textarea>
+        <br><br>
+        <button type="submit" class="btn btn-primary">Kirim Pesan</button>
+    </form>
+</div>
+</div>
+<div class="card">
+    <h1 class="card-title">Pesan Masuk</h1>
+<div class="Roman">
+    {% if inbox_messages %}
+        <ul>
+            {% for message in inbox_messages %}
+                    <li><strong>Dari:</strong> {{ message.sender.username }}<br></li>
+              <hr>
+                   <li> <strong>Isi:</strong> {{ message.content }}<br></li>
+              <hr>
+                    <li><strong>Dikirim:</strong> {{ message.date_posted.strftime('%Y-%m-%d %H:%M') }}
+                    <br></li>
+              <hr>
+		<div class="form-group">
+	<form action="{{ url_for('send_message') }}" method="POST">
+    <input type="hidden" name="recipient_id" value="{{ message.sender.id }}">
+    <textarea name="content" placeholder="Balas pesan ini..." required></textarea>
+    <button type="submit" class="btn btn-primary">Balas</button>
+	</form>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Anda tidak memiliki pesan masuk.</p>
+    {% endif %}
+</div>
+</div>
+<div class="card">
+    <h1 class="card-title">Kirim Pesan</h1>
+<div class="Roman"> 
+   {% if sent_messages %}
+        <ul>
+            {% for message in sent_messages %}
+                <li><strong>Ke:</strong> {{ message.recipient.username }}<br></li>
+                   <li> <strong>Isi Pesan:</strong> {{ message.content }}<br></li>
+                   <li> <strong>Dikirim:</strong> {{ message.date_posted.strftime('%Y-%m-%d %H:%M') }}
+                </li>
+              <hr>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Anda tidak memiliki pesan terkirim.</p>
+    {% endif %}
+</div>
+</div>
+</div>
+{% endblock %}

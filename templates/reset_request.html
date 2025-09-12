@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Permintaan Reset Kata Sandi{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="card form-card">
+            <h1 class="card-title">Reset Kata Sandi</h1>
+            <p>Masukkan email Anda untuk menerima tautan reset kata sandi.</p>
+            
+            <form method="post" action="{{ url_for('reset_request') }}" class="form-reset">
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Email" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Kirim Tautan Reset</button>
+            </form>
+            
+            <div class="form-links">
+                <p><a href="{{ url_for('login') }}" class="link">Kembali ke halaman login</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

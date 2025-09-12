@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Home - KeiApp{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if current_user.is_authenticated %}
+            <div class="card">
+		<div class="form-card">
+                <img class="profile-image" src="{{ current_user.profile_image_url }}" alt="Foto Profil">
+                <h2>@{{ current_user.username }}</h2>
+                <p>Bio: {{ current_user.bio if current_user.bio else 'Tidak ada bio.' }}</p>
+		</div>
+                <a href="{{ url_for('profile') }}" class="btn">Edit Profil</a>
+                <a href="{{ url_for('gallery') }}" class="btn">Unggah Foto</a>
+                <a href="{{ url_for('music_room') }}" class="btn">MusicVideo</a>
+	</div>
+
+            <div class="card">
+                <div class="form-card">
+                    <h4 class="card-title">List</h4>
+                    <div class=" Roman">
+                        {% if latest_todos %}
+			<ul>
+                            {% for todo in latest_todos %}
+                                <li>{{ todo.content }}</li>
+				<hr>
+                            {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>Anda belum memiliki tugas. <a class="btn"  href="{{ url_for('todo_list') }}" class="feature-link">Tambah sekarang!</a></p>
+                        {% endif %}
+                    </div>
+			</div>
+            <div class="card">
+                    <h4 class="card-title">Gambar Terbaru</h4>
+                    <div class="gallery-preview ">
+                        {% if latest_images %}
+                            {% for image in latest_images %}
+                                <img class="combrok" src="{{ image.secure_url }}" data-src="{{ image.secure_url }}" alt="{{ image.description }}">
+                            {% endfor %}
+                        {% else %}
+                            <p>Anda belum memiliki gambar. <a class="btn" href="{{ url_for('gallery') }}" class="feature-link">Unggah sekarang!</a></p>
+                        {% endif %}
+               </div></div></div>
+
+	<div class="card ">
+    	<div class="form-card Roman">
+	<ul>
+        <h5 class="card-title">Musik Terbaru</h5>
+        {% if latest_music %}
+                {% for music in latest_music %}
+    		<div class=" music-details form-card">
+              <audio controls class="sempak" preload="metadata">
+                            <source src="{{ music.audio_url }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>
+                            <p class="HomeMusic-title" style="text-align: center; font-weight: 600; font-style: italic; font-size: 0.9rem;">{{ music.title }}</p>
+                            <p class="HomeMusic-artist" style="text-align: center; font-size: 0.8rem; font-weight: 200;">{{ music.artist }}</p>
+		    </div>
+                {% endfor %}
+            </div></ul>
+        {% else %}
+            <p><a href="{{ url_for('music_room') }}" class="btn">Belum ada musik diunggah.</a></p>
+        {% endif %}
+    </div>
+
+            
+        <div class="card">
+    <h2 class="card-title">Cuaca Hari Ini</h2>
+    <div class="form-card weather">
+        <div class="weather-info">
+            <span class="temperature">--°C</span> 
+            <span class="condition">Memuat...</span>
+            <span class="location">Mencari Lokasi...</span>
+        </div>
+    </div>
+   </div>
+
+<div class="card-quote">
+    <h2 class="card-title">Kata Kata Hari Ini Bang Jago.!!</h2>
+    {% if quote %}
+    <div class="quote">
+        <blockquote>
+            "{{ quote.content }}"
+        </blockquote>
+        {% if quote.author %}
+        <cite>— {{ quote.author }}</cite>
+        {% endif %}
+    </div>
+    {% else %}
+    <p>Belum ada kutipan hari ini.</p>
+    {% endif %}
+</div>
+            <div class="card">
+		<div class="Roman">
+		<ul>
+                <div class="form-card">
+                <h3 class="card-title">KeiApp Memiliki</h3>
+                <li>All Users: <strong>{{ total_users }}</strong></li>
+                <li>All Image: <strong>{{ total_images }}</strong></li> 
+		<li>All Comment: <strong>{{ total_comments }}</strong></li>
+                <li>All like: <strong>{{ total_likes }}</strong></li>
+                <a href="{{ url_for('show_plans') }}" class="feature-link">Gabung</a>
+            </ul></div></div></div>
+
+
+        {% else %}
+            <div class="card">
+                <h1 class="card-title">Selamat Datang!</h1>
+                <p>Silakan masuk atau daftar untuk menggunakan aplikasi.</p>
+                <div class="feature-link-container">
+                    <a href="{{ url_for('login') }}" class="feature-link">Login</a>
+                    <a href="{{ url_for('register') }}" class="feature-link" style="background-color: #2ecc71;">Daftar</a>
+                </div>
+            </div>
+        {% endif %}
+
+       </div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/weatherJonskuY.js') }}"></script>
+{% endblock %}

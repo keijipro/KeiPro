@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Contact - Keiji{% endblock %} {# Huruf kapital Title dan Keiji #}
+
+{% block content %}
+<div class="contact-section">
+    <div class="contact-info">
+        <h2 class="contact-title">Anda butuh bantuan? Hubungi saya</h2> {# Huruf kapital awal #}
+        <p class="contact-description"></p>
+        <div class="contact-details">
+            <p>Email: <a href="mailto:keijipro91@gmail.com">keijipro91@gmail.com</a></p> {# Perbaiki email, tambahkan @ #}
+            <p>Telepon: <a href="tel:+6285707357830">+6285707357830</a></p> {# Huruf kapital awal #}
+            <p>Jalan: Basoka No. 9, Kota Boom</p> {# Huruf kapital awal #}
+        </div>
+    </div>
+    <form id="contact-form">
+        <div class="form-group">
+            <label for="name">Nama:</label> {# Huruf kapital awal #}
+            <input type="text" id="name" name="name" required placeholder="Nama lengkap Anda"> {# Huruf kapital awal #}
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label> {# Huruf kapital awal #}
+            <input type="email" id="email" name="email" required placeholder="Alamat email"> {# Huruf kapital awal #}
+        </div>
+        <div class="form-group">
+            <label for="subject">Subjek:</label> {# Huruf kapital awal #}
+            <input type="text" id="subject" name="subject" required placeholder="Subjek Anda"> {# Huruf kapital awal #}
+        </div>
+        <div class="form-group">
+            <label for="message">Pesan:</label> {# Huruf kapital awal #}
+            <textarea id="message" name="message" required placeholder="Pesan Anda..."></textarea> {# Huruf kapital awal #}
+        </div>
+        <button type="submit" class="submit-button">Kirim</button> {# Huruf kapital awal #}
+    </form>
+    <p id="contact-response-message"></p> {# Ganti id agar tidak konflik dengan nama variabel JS 'message' #}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => { 
+        const form = document.getElementById('contact-form'); 
+        const responseMessageElement = document.getElementById('contact-response-message'); 
+
+        form.addEventListener('submit', async (e) => { // Perbaiki: addEventListener, gunakan async/await untuk fetch
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value; 
+            const userMessage = document.getElementById('message').value;
+
+            try {
+                const response = await fetch('/contact', {
+                    method: 'POST', // Huruf kapital
+                    headers: {
+                        'Content-Type': 'application/json' // Huruf kapital
+                    },
+                    body: JSON.stringify({ // Huruf kapital
+                        name: name,
+                        email: email,
+                        subject: subject, // Kirim subject
+                        message: userMessage // Kirim pesan pengguna
+                    })
+                });
+
+                const data = await response.json();
+
+                responseMessageElement.textContent = data.message;
+                if (data.success) {
+                    responseMessageElement.style.color = 'green';
+                    form.reset();
+                } else {
+                    responseMessageElement.style.color = 'red';
+                }
+            } catch (error) {
+                responseMessageElement.textContent = 'Terjadi kesalahan. Silakan coba lagi.';
+                responseMessageElement.style.color = 'red';
+                console.error('Error:', error);
+            }
+        });
+    });
+</script>
+{% endblock %}
+
