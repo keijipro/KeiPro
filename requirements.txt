@@ -26,6 +26,7 @@ python-dotenv
 python-pip
 requests
 six
+psycopg2-binary
 SQLAlchemy
 typing_extensions
 urllib3
