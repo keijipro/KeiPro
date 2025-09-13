@@ -25,9 +25,6 @@ kei = Flask(__name__, static_folder='projec', static_url_path='/static')
 kei.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 kei.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
-db = SQLAlchemy(kei)
-migrate = Migrate(kei, db)
-
 kei.config['MAIL_SERVER'] = 'smtp.gmail.com'
 kei.config['MAIL_PORT'] = 587
 kei.config['MAIL_USE_TLS'] = True
