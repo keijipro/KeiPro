@@ -1133,6 +1133,6 @@ def choose_plan(plan):
     else:
         flash('Paket tidak valid.', 'danger')
         return redirect(url_for('show_plans'))
-with kei.app_context():
+with app.app_context():
     db.create_all()
     print("Tabel berhasil dibuat!")
