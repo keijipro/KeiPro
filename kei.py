@@ -751,9 +751,10 @@ def upload_music():
     album_art_public_id = request.form.get('album_art_public_id')
 
     if not main_file_url:
-        return jsonify(success=False, message='Gagal mengunggah file.'), 400
+        return jsonify(success=False, message='Tidak ada file utama yang diunggah.'), 400
 
     try:
+        
         resource_type = main_public_id.split('/')[0] if main_public_id else ''
 
         video_url = None
@@ -761,12 +762,14 @@ def upload_music():
         audio_url = None
         audio_public_id = None
 
-        if resource_type == 'video' or 'video' in main_public_id:
+        if resource_type == 'video' or 'video' in main_file_url:
+            
             video_url = main_file_url
             video_public_id = main_public_id
-            audio_url = main_file_url.replace("/upload/", "/upload/f_mp3/")
+            audio_url = main_file_url.replace("/video/", "/video/f_mp3/")
             audio_public_id = main_public_id
-        elif resource_type == 'audio' or 'audio' in main_public_id:
+        elif resource_type == 'raw' or 'raw' in main_file_url:
+            
             audio_url = main_file_url
             audio_public_id = main_public_id
 
@@ -781,6 +784,7 @@ def upload_music():
             album_art_public_id=album_art_public_id,
             user_id=current_user.id
         )
+
         db.session.add(new_music)
         db.session.commit()
         return jsonify(success=True, message='Musik/Video berhasil diunggah!'), 200
