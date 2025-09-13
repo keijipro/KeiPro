@@ -24,7 +24,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 kei = Flask(__name__, static_folder='projec', static_url_path='/static')
 kei.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('postgresql://neondb_owner:npg_eBbQF4XE3acu@ep-soft-base-a12kno7p-pooler.ap-southeast-1.aws.neon.tech/KeiApp?sslmode=require&channel_binding=require')
 kei.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-db = SQLalchemy(kei)
+db = SQLAlchemy(kei)
 kei.config['MAIL_SERVER'] = 'smtp.gmail.com'
 kei.config['MAIL_PORT'] = 587
 kei.config['MAIL_USE_TLS'] = True
