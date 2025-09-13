@@ -22,7 +22,8 @@ import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 kei = Flask(__name__, static_folder='projec', static_url_path='/static')
-kei.config['DATABASE_URL'] = os.environ.get('DATABASE_URL')
+kei.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
+
 kei.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 db = SQLAlchemy(kei)
 migrate = Migrate(kei, db)
