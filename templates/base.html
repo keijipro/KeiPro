@@ -15,7 +15,7 @@
 <body>
 
     <header class="main-header">
-      <a href="{{ url_for('HomeKei') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.svg') }}"></a>
+      <a href="{{ url_for('HomeKei') }}" class="logo"><img src="{{ url_for('static', filename='images/favicon.svg') }}"></a>
         <nav class="main-nav">
             <ul>
                 {% if current_user.is_authenticated %}
