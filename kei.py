@@ -751,8 +751,7 @@ def upload_music():
     album_art_public_id = request.form.get('album_art_public_id')
 
     if not main_file_url:
-        flash('Gagal mengunggah file. Silakan coba lagi.', 'danger')
-        return redirect(url_for('music_room'))
+        return jsonify(success=False, message='Gagal mengunggah file.'), 400
 
     try:
         resource_type = main_public_id.split('/')[0] if main_public_id else ''
@@ -784,14 +783,11 @@ def upload_music():
         )
         db.session.add(new_music)
         db.session.commit()
-        flash('Musik/Video berhasil diunggah!', 'success')
-        print("--- END UPLOAD PROCESS (SUCCESS) ---")
+        return jsonify(success=True, message='Musik/Video berhasil diunggah!'), 200
     except Exception as e:
         db.session.rollback()
         logging.error(f"Gagal menyimpan data ke database: {e}")
-        flash(f"Gagal menyimpan data: {e}", 'danger')
-
-    return redirect(url_for('music_room'))
+        return jsonify(success=False, message=f"Gagal menyimpan data: {e}"), 500
 
 @app.route('/inbox')
 @login_required
