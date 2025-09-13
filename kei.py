@@ -742,6 +742,7 @@ def music_room():
     music_library = Music.query.filter_by(user_id=current_user.id).order_by(Music.date_uploaded.desc()).all()
     return render_template('music.html', music_library=music_library)
 
+
 @app.route('/upload-music', methods=['POST'])
 @login_required
 def upload_music():
@@ -753,18 +754,16 @@ def upload_music():
     artist = request.form.get('artist', 'Unknown Artist')
 
     if not main_file_url:
-        return jsonify(success=False, message='Tidak ada file yang diunggah.'), 400
+        return jsonify(success=False, message='Tidak ada file utama yang diunggah.'), 400
 
     try:
-       
         if 'video' in main_file_url:
             video_url = main_file_url
             video_public_id = main_public_id
-
-            audio_url, _ = cloudinary_url(main_public_id, resource_type="video", format="mp3")
+            
+            audio_url, _ = cloudinary_url(main_public_id, resource_type="video", format="mp3", secure=True) 
             audio_public_id = main_public_id
         else:
-            
             video_url = None
             video_public_id = None
             audio_url = main_file_url
@@ -789,6 +788,7 @@ def upload_music():
         db.session.rollback()
         logging.error(f"Gagal menyimpan data ke database: {e}")
         return jsonify(success=False, message=f"Gagal menyimpan data: {e}"), 500
+            
 
 @app.route('/inbox')
 @login_required
