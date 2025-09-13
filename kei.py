@@ -41,6 +41,7 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 class Follow(db.Model):
+    __tablename__ = 'follows'
     follower_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
@@ -88,11 +89,6 @@ class User(UserMixin, db.Model):
 
     def is_following(self, user):
         return self.following.filter_by(followed_id=user.id).first() is not None
-
-class Follow(db.Model):
-    __tablename__ = 'follows'
-    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
 
 class Music(db.Model):
     __tablename__ = 'music'
