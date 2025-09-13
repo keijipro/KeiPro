@@ -745,64 +745,52 @@ def music_room():
 @app.route('/upload-music', methods=['POST'])
 @login_required
 def upload_music():
-    if 'file' not in request.files or request.files['file'].filename == '':
-        flash('Tidak ada file utama yang dipilih.', 'danger')
+    main_file_url = request.form.get('main_file_url')
+    main_public_id = request.form.get('main_public_id')
+    album_art_url = request.form.get('album_art_url')
+    album_art_public_id = request.form.get('album_art_public_id')
+
+    if not main_file_url:
+        flash('Gagal mengunggah file. Silakan coba lagi.', 'danger')
         return redirect(url_for('music_room'))
-    main_file = request.files['file']
-    album_art_file = request.files.get('album_art_file')
-    if main_file:
-        try:
-            upload_result = cloudinary.uploader.upload(main_file, resource_type="auto", folder="music_room")
-            video_url = upload_result.get('secure_url')
-            video_public_id = upload_result.get('public_id')
-            resource_type_from_cloudinary = upload_result.get('resource_type', '')
-            audio_url = None
-            audio_public_id = None
-            if 'video' in resource_type_from_cloudinary:
-                new_music_video_url = video_url
-                new_music_video_public_id = video_public_id
-                if new_music_video_url:
-                    audio_url = new_music_video_url.replace("/upload/", "/upload/f_mp3/")
-                    audio_public_id = video_public_id
-            elif 'audio' in resource_type_from_cloudinary or 'raw' in resource_type_from_cloudinary:
-                new_music_video_url = None
-                new_music_video_public_id = None
-                audio_url = video_url
-                audio_public_id = video_public_id
-            else:
-                new_music_video_url = None
-                new_music_video_public_id = None
-                audio_url = None
-                audio_public_id = None
-            album_art_url = None
-            album_art_public_id = None
-            if album_art_file and album_art_file.filename != '':
-                album_art_upload_result = cloudinary.uploader.upload(
-                    album_art_file,
-                    resource_type="image",
-                    folder="music_room/album_art"
-                )
-                album_art_url = album_art_upload_result.get('secure_url')
-                album_art_public_id = album_art_upload_result.get('public_id')
-            new_music = Music(
-                title=request.form.get('title', 'Untitled'),
-                artist=request.form.get('artist', 'Unknown Artist'),
-                video_url=new_music_video_url,
-                video_public_id=new_music_video_public_id,
-                audio_url=audio_url,
-                audio_public_id=audio_public_id,
-                album_art_url=album_art_url,
-                album_art_public_id=album_art_public_id,
-                user_id=current_user.id
-            )
-            db.session.add(new_music)
-            db.session.commit()
-            flash('Musik/Video berhasil diunggah!', 'success')
-            print("--- END UPLOAD PROCESS (SUCCESS) ---")
-        except Exception as e:
-            db.session.rollback()
-            logging.error(f"Gagal mengunggah file: {e}")
-            flash(f"Gagal mengunggah file: {e}", 'danger')
+
+    try:
+        resource_type = main_public_id.split('/')[0] if main_public_id else ''
+
+        video_url = None
+        video_public_id = None
+        audio_url = None
+        audio_public_id = None
+
+        if resource_type == 'video' or 'video' in main_public_id:
+            video_url = main_file_url
+            video_public_id = main_public_id
+            audio_url = main_file_url.replace("/upload/", "/upload/f_mp3/")
+            audio_public_id = main_public_id
+        elif resource_type == 'audio' or 'audio' in main_public_id:
+            audio_url = main_file_url
+            audio_public_id = main_public_id
+
+        new_music = Music(
+            title=request.form.get('title', 'Untitled'),
+            artist=request.form.get('artist', 'Unknown Artist'),
+            video_url=video_url,
+            video_public_id=video_public_id,
+            audio_url=audio_url,
+            audio_public_id=audio_public_id,
+            album_art_url=album_art_url,
+            album_art_public_id=album_art_public_id,
+            user_id=current_user.id
+        )
+        db.session.add(new_music)
+        db.session.commit()
+        flash('Musik/Video berhasil diunggah!', 'success')
+        print("--- END UPLOAD PROCESS (SUCCESS) ---")
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"Gagal menyimpan data ke database: {e}")
+        flash(f"Gagal menyimpan data: {e}", 'danger')
+
     return redirect(url_for('music_room'))
 
 @app.route('/inbox')
