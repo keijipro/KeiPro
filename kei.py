@@ -547,6 +547,7 @@ def gallery():
                             if not tag:
                                 tag = Tag(name=tag_name)
                                 db.session.add(tag)
+                                db.session.flush()
                             new_image.tags.append(tag)
                     db.session.commit()
                     flash(f'Gambar {file.filename} berhasil diunggah!', 'success')
