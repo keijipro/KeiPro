@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    
     const toggleModeBtn = document.getElementById('toggleModeBtn');
     const musicItems = document.querySelectorAll('.music-item');
     const videoIcon = toggleModeBtn ? toggleModeBtn.querySelector('.video-icon') : null;
@@ -25,20 +26,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const audioPlayer = item.querySelector('.audio-player');
                 const albumArtFallback = item.querySelector('.album-art-fallback');
 
+                
                 if (videoPlayer) videoPlayer.classList.add('hidden');
                 if (audioPlayer) audioPlayer.classList.add('hidden');
                 if (albumArtFallback) albumArtFallback.classList.add('hidden');
 
+                
                 if (globalMode === 'video') {
-                    if (videoPlayer && videoPlayer.dataset.src) {
-                        videoPlayer.src = videoPlayer.dataset.src;
+                    if (videoPlayer && videoPlayer.src) {
                         videoPlayer.classList.remove('hidden');
                     } else if (albumArtFallback && albumArtFallback.src) {
                         albumArtFallback.classList.remove('hidden');
                     }
-                } else {
-                    if (audioPlayer && audioPlayer.dataset.src) {
-                        audioPlayer.src = audioPlayer.dataset.src;
+                } else { 
+                    if (audioPlayer && audioPlayer.src) {
                         audioPlayer.classList.remove('hidden');
                     } else if (albumArtFallback && albumArtFallback.src) {
                         albumArtFallback.classList.remove('hidden');
@@ -54,15 +55,15 @@ document.addEventListener('DOMContentLoaded', () => {
             let currentGlobalMode = toggleModeBtn.dataset.mode;
             if (currentGlobalMode === 'video') {
                 toggleModeBtn.dataset.mode = 'music';
-                videoIcon.classList.add('hidden');
-                musicIcon.classList.remove('hidden');
-                buttonText.textContent = 'Switch to Video Mode';
+                if (videoIcon) videoIcon.classList.add('hidden');
+                if (musicIcon) musicIcon.classList.remove('hidden');
+                if (buttonText) buttonText.textContent = 'Switch to Video Mode';
                 updateAllPlayersDisplay('music');
             } else {
                 toggleModeBtn.dataset.mode = 'video';
-                videoIcon.classList.remove('hidden');
-                musicIcon.classList.add('hidden');
-                buttonText.textContent = 'Switch to Music Mode';
+                if (videoIcon) videoIcon.classList.remove('hidden');
+                if (musicIcon) musicIcon.classList.add('hidden');
+                if (buttonText) buttonText.textContent = 'Switch to Music Mode';
                 updateAllPlayersDisplay('video');
             }
         });
@@ -77,22 +78,26 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    
     const uploadForm = document.querySelector('.upload-form');
     if (!uploadForm) {
         return;
     }
 
-    const mainFileInput = document.querySelector('input[name="file"]');
-    const albumArtInput = document.querySelector('input[name="album_art_file"]');
-
+    const mainFileInput = uploadForm.querySelector('input[name="file"]');
+    const albumArtInput = uploadForm.querySelector('input[name="album_art_file"]');
+    
+    
     const CLOUDINARY_CLOUD_NAME = 'di0sdr2no';
     const CLOUDINARY_UPLOAD_PRESET = 'KeiApp';
 
+    
     const uploadFile = (file, resourceType) => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-
+        
         return fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`, {
             method: 'POST',
             body: formData
@@ -100,28 +105,29 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json());
     };
 
+    
     uploadForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
         const mainFile = mainFileInput.files[0];
         const albumArtFile = albumArtInput.files[0];
-
+        
         if (!mainFile) {
             alert('Silakan pilih file musik atau video terlebih dahulu!');
             return;
         }
 
-        alert('Mengunggah file...');
+        console.log('Mengunggah file...');
 
         Promise.all([
             uploadFile(mainFile, 'auto'),
             albumArtFile ? uploadFile(albumArtFile, 'image') : Promise.resolve(null)
         ])
         .then(([mainResult, albumArtResult]) => {
-
             if (!mainResult || !mainResult.secure_url) {
                 throw new Error('Gagal mengunggah file utama.');
             }
+            
             const formData = new FormData();
             formData.append('title', uploadForm.querySelector('input[name="title"]').value);
             formData.append('artist', uploadForm.querySelector('input[name="artist"]').value);
@@ -151,5 +157,4 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Terjadi kesalahan: ' + error.message);
         });
     });
-});  
-    
+});
