@@ -13,7 +13,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "base.html"
+      "dest": "home.html"
     }
   ],
   "buildCommand": "pip install -r requirements.txt && python -m flask db upgrade"
