@@ -74,8 +74,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False) # PERBAIKAN: Perbesar panjangnya
-    profile_image_url = db.Column(db.String(512), nullable=True, default='/static/images/logo.png') # PERBAIKAN: Perbesar panjangnya
+    password_hash = db.Column(db.String(256), nullable=False)
+    profile_image_url = db.Column(db.String(512), nullable=True, default='/static/images/logo.png')
     subscription_plan = db.Column(db.String(50), nullable=False, default='free')
     todos = db.relationship('Todo', backref='owner', lazy=True)
     images = db.relationship('GalleryImage', backref='uploader', lazy=True)
