@@ -40,8 +40,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-# Definisi Tabel Asosiasi dan Model
-# Perbaikan: Menggunakan nama tabel 'user'
 class WeatherSetting(db.Model):
     __tablename__ = 'weather_settings'
     id = db.Column(db.Integer, primary_key=True)
@@ -76,8 +74,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
-    profile_image_url = db.Column(db.String(255), nullable=True, default='/static/images/logo.png')
+    password_hash = db.Column(db.String(256), nullable=False) # PERBAIKAN: Perbesar panjangnya
+    profile_image_url = db.Column(db.String(512), nullable=True, default='/static/images/logo.png') # PERBAIKAN: Perbesar panjangnya
     subscription_plan = db.Column(db.String(50), nullable=False, default='free')
     todos = db.relationship('Todo', backref='owner', lazy=True)
     images = db.relationship('GalleryImage', backref='uploader', lazy=True)
@@ -130,11 +128,11 @@ class Music(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
     artist = db.Column(db.String(100), nullable=False)
-    video_url = db.Column(db.String(255), nullable=True)
+    video_url = db.Column(db.String(512), nullable=True) # PERBAIKAN: Perbesar panjangnya
     video_public_id = db.Column(db.String(100), nullable=True)
-    audio_url = db.Column(db.String(255), nullable=True)
+    audio_url = db.Column(db.String(512), nullable=True) # PERBAIKAN: Perbesar panjangnya
     audio_public_id = db.Column(db.String(100), nullable=True)
-    album_art_url = db.Column(db.String(255), nullable=True)
+    album_art_url = db.Column(db.String(512), nullable=True) # PERBAIKAN: Perbesar panjangnya
     album_art_public_id = db.Column(db.String(100), nullable=True)
     date_uploaded = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -152,7 +150,7 @@ class GalleryImage(db.Model):
     __tablename__ = 'gallery_image'
     id = db.Column(db.Integer, primary_key=True)
     public_id = db.Column(db.String(200), nullable=False)
-    secure_url = db.Column(db.String(255), nullable=False)
+    secure_url = db.Column(db.String(512), nullable=False) # PERBAIKAN: Perbesar panjangnya
     description = db.Column(db.String(255), nullable=True)
     date_uploaded = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -269,7 +267,6 @@ def get_weather(api_key, city=None, lat=None, lon=None):
         logging.error(f"Error saat mengambil data cuaca: {err}")
         return None
 
-# Context Processor
 @app.context_processor
 def inject_notifications():
     if current_user.is_authenticated:
@@ -277,7 +274,6 @@ def inject_notifications():
         return dict(unread_count=unread_count)
     return dict(unread_count=0)
 
-# Routes
 @app.route('/')
 @login_required
 def HomeKei():
