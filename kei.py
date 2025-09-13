@@ -742,40 +742,38 @@ def music_room():
     music_library = Music.query.filter_by(user_id=current_user.id).order_by(Music.date_uploaded.desc()).all()
     return render_template('music.html', music_library=music_library)
 
+
+
 @app.route('/upload-music', methods=['POST'])
-@login_required
 def upload_music():
     main_file_url = request.form.get('main_file_url')
     main_public_id = request.form.get('main_public_id')
     album_art_url = request.form.get('album_art_url')
     album_art_public_id = request.form.get('album_art_public_id')
+    title = request.form.get('title', 'Untitled')
+    artist = request.form.get('artist', 'Unknown Artist')
 
     if not main_file_url:
         return jsonify(success=False, message='Tidak ada file utama yang diunggah.'), 400
 
     try:
-        
-        resource_type = main_public_id.split('/')[0] if main_public_id else ''
 
-        video_url = None
-        video_public_id = None
-        audio_url = None
-        audio_public_id = None
-
-        if resource_type == 'video' or 'video' in main_file_url:
-            
+        if 'video' in main_file_url:
             video_url = main_file_url
             video_public_id = main_public_id
-            audio_url = main_file_url.replace("/video/", "/video/f_mp3/")
+
+            audio_url, _ = cloudinary_url(main_public_id, resource_type="video", format="mp3")
             audio_public_id = main_public_id
-        elif resource_type == 'raw' or 'raw' in main_file_url:
+        else:
             
+            video_url = None
+            video_public_id = None
             audio_url = main_file_url
             audio_public_id = main_public_id
-
+        
         new_music = Music(
-            title=request.form.get('title', 'Untitled'),
-            artist=request.form.get('artist', 'Unknown Artist'),
+            title=title,
+            artist=artist,
             video_url=video_url,
             video_public_id=video_public_id,
             audio_url=audio_url,
@@ -784,14 +782,15 @@ def upload_music():
             album_art_public_id=album_art_public_id,
             user_id=current_user.id
         )
-
+        
         db.session.add(new_music)
         db.session.commit()
-        return jsonify(success=True, message='Musik/Video berhasil diunggah!'), 200
+        return jsonify(success=True, message='Musik Atau Video berhasil diunggah!'), 200
     except Exception as e:
         db.session.rollback()
         logging.error(f"Gagal menyimpan data ke database: {e}")
         return jsonify(success=False, message=f"Gagal menyimpan data: {e}"), 500
+    
 
 @app.route('/inbox')
 @login_required
