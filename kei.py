@@ -40,6 +40,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+# Definisi Tabel Asosiasi dan Model
+# Perbaikan: Menggunakan nama tabel 'user'
 class WeatherSetting(db.Model):
     __tablename__ = 'weather_settings'
     id = db.Column(db.Integer, primary_key=True)
@@ -54,8 +56,8 @@ class Quote(db.Model):
 
 class Follow(db.Model):
     __tablename__ = 'follows'
-    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    follower_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    followed_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
 class Tag(db.Model):
     __tablename__ = 'tags'
@@ -70,7 +72,7 @@ image_tags = db.Table('image_tags',
 )
 
 class User(UserMixin, db.Model):
-    __tablename__ = 'users'
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
@@ -135,13 +137,13 @@ class Music(db.Model):
     album_art_url = db.Column(db.String(255), nullable=True)
     album_art_public_id = db.Column(db.String(100), nullable=True)
     date_uploaded = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 class Category(db.Model):
     __tablename__ = 'categories'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     images = db.relationship('GalleryImage', backref='category', lazy=True)
     def __repr__(self):
         return f"<Category {self.name}>"
@@ -153,7 +155,7 @@ class GalleryImage(db.Model):
     secure_url = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(255), nullable=True)
     date_uploaded = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=True)
     comments = db.relationship('Comment', backref='image', lazy=True, cascade="all, delete-orphan")
     likes = db.relationship('Like', backref='image', lazy=True, cascade="all, delete-orphan")
@@ -166,13 +168,13 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     image_id = db.Column(db.Integer, db.ForeignKey('gallery_image.id'), nullable=False)
 
 class Like(db.Model):
     __tablename__ = 'likes'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     image_id = db.Column(db.Integer, db.ForeignKey('gallery_image.id'), nullable=False)
     __table_args__ = (db.UniqueConstraint('user_id', 'image_id', name='_user_image_uc'),)
 
@@ -182,7 +184,7 @@ class Todo(db.Model):
     content = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     completed = db.Column(db.Boolean, default=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     def __repr__(self):
         return '<Task %r>' % self.id
 
@@ -191,8 +193,8 @@ class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    recipient_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 class Notifications(db.Model):
     __tablename__ = 'notifications'
@@ -200,7 +202,7 @@ class Notifications(db.Model):
     message = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     is_read = db.Column(db.Boolean, default=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     message_id = db.Column(db.Integer, db.ForeignKey('messages.id'), nullable=True)
     image_id = db.Column(db.Integer, db.ForeignKey('gallery_image.id'), nullable=True)
     def __repr__(self):
@@ -267,6 +269,7 @@ def get_weather(api_key, city=None, lat=None, lon=None):
         logging.error(f"Error saat mengambil data cuaca: {err}")
         return None
 
+# Context Processor
 @app.context_processor
 def inject_notifications():
     if current_user.is_authenticated:
@@ -274,6 +277,7 @@ def inject_notifications():
         return dict(unread_count=unread_count)
     return dict(unread_count=0)
 
+# Routes
 @app.route('/')
 @login_required
 def HomeKei():
@@ -837,7 +841,7 @@ def send_message():
     if recipient.id != current_user.id:
          new_notification = Notifications(
             user_id=recipient.id,
-            message=f"Pesan baru dari {current_user.username}",
+            message=f"Pesan baru dari Administrator",
             message_id=new_message.id
         )
          db.session.add(new_notification)
@@ -868,7 +872,7 @@ def admin_room():
                         db.session.add(new_message)
                         new_notification = Notifications(
                             user_id=user.id,
-                            message=f"Pesan dari Admin",
+                            message=f"Pesan baru dari Administrator",
                             message_id=new_message.id
                         )
                         db.session.add(new_notification)
