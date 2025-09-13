@@ -58,7 +58,7 @@ class Follow(db.Model):
     followed_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
 class Tag(db.Model):
-    __tablename__ = 'tags'
+    __tablename__ = 'tag'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
     def __repr__(self):
@@ -66,7 +66,7 @@ class Tag(db.Model):
 
 image_tags = db.Table('image_tags',
     db.Column('image_id', db.Integer, db.ForeignKey('gallery_image.id')),
-    db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'))
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
 )
 
 class User(UserMixin, db.Model):
@@ -128,11 +128,11 @@ class Music(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150), nullable=False)
     artist = db.Column(db.String(100), nullable=False)
-    video_url = db.Column(db.String(512), nullable=True) # PERBAIKAN: Perbesar panjangnya
+    video_url = db.Column(db.String(512), nullable=True) 
     video_public_id = db.Column(db.String(100), nullable=True)
-    audio_url = db.Column(db.String(512), nullable=True) # PERBAIKAN: Perbesar panjangnya
+    audio_url = db.Column(db.String(512), nullable=True) 
     audio_public_id = db.Column(db.String(100), nullable=True)
-    album_art_url = db.Column(db.String(512), nullable=True) # PERBAIKAN: Perbesar panjangnya
+    album_art_url = db.Column(db.String(512), nullable=True) 
     album_art_public_id = db.Column(db.String(100), nullable=True)
     date_uploaded = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -150,7 +150,7 @@ class GalleryImage(db.Model):
     __tablename__ = 'gallery_image'
     id = db.Column(db.Integer, primary_key=True)
     public_id = db.Column(db.String(200), nullable=False)
-    secure_url = db.Column(db.String(512), nullable=False) # PERBAIKAN: Perbesar panjangnya
+    secure_url = db.Column(db.String(512), nullable=False) 
     description = db.Column(db.String(255), nullable=True)
     date_uploaded = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
