@@ -1,4 +1,5 @@
 import os
+import sys
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, current_app, abort
 from werkzeug.utils import secure_filename
 import cloudinary
@@ -18,12 +19,12 @@ from itsdangerous import URLSafeTimedSerializer as Serializer
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import logging
-from kei import kei, db, User
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 kei = Flask(__name__, static_folder='projec', static_url_path='/static')
 kei.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL' 'sqlite:///instance/site.db')
 kei.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+
 db = SQLAlchemy(kei)
 migrate = Migrate(kei, db)
 
