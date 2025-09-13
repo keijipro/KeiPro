@@ -1133,3 +1133,4 @@ def choose_plan(plan):
     else:
         flash('Paket tidak valid.', 'danger')
         return redirect(url_for('show_plans'))
+db.create_all()
