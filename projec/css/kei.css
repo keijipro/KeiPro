@@ -672,24 +672,6 @@ textarea {
 .temperature.cold {
     color: #3498db; 
 }
-/*
-.quote {
-    text-align: center;
-}
-.quote blockquote {
-    font-style: italic;
-    font-size: 0.8rem;
-    line-height: 1.2;
-    color: var(--text-color-soft);
-    margin: 0;
-    padding: 0;
-}
-.quote cite {
-    display: block;
-    margin-top: 7px;
-    font-size: 0.7rem;
-    color: var(--secondary-color-soft);
-}*/
 
 .card-quote {
     position: relative;
@@ -1010,6 +992,24 @@ cite {
     border: none;
     color: var(--accent-color) ;
 }
+.upload-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.hidden {
+    display: none;
+}
+
 @media (min-width: 568px) {
     body {
         padding-top: 60px;
