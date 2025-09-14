@@ -41,7 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else { 
                     if (audioPlayer && audioPlayer.src) {
                         audioPlayer.classList.remove('hidden');
-                    } else if (albumArtFallback && albumArtFallback.src) {
+                    }
+                    if (albumArtFallback && albumArtFallback.src) {
                         albumArtFallback.classList.remove('hidden');
                     }
                 }
