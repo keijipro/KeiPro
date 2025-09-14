@@ -757,8 +757,9 @@ def upload_music():
         return jsonify(success=False, message='Tidak ada file utama yang diunggah.'), 400
 
     try:
+        secure_main_file_url = main_file_url.replace("http://", "https://")
         if 'video' in main_file_url:
-            video_url = main_file_url
+            video_url = secure_main_file_url
             video_public_id = main_public_id
             
             audio_url, _ = cloudinary_url(main_public_id, resource_type="video", format="mp3", secure=True) 
@@ -766,7 +767,7 @@ def upload_music():
         else:
             video_url = None
             video_public_id = None
-            audio_url = main_file_url
+            audio_url = secure_main_file_url
             audio_public_id = main_public_id
         
         new_music = Music(
