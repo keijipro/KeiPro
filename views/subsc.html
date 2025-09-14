@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Pilih Paket Langganan{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="card">
+            <h1 class="card-title">No Payment Method</h1>
+            <p>Bergabung.</p>
+        </div>
+
+        <div class="plan-options">
+            <div class="card plan-card">
+                <h2 class="card-subtitle">Paket Kanca</h2>
+                <p>Unggah hingga 10 gambar.</p>
+                <p>Fitur dasar.</p>
+                <a href="{{ url_for('choose_plan', plan='free') }}" class="btn btn-primary">Pilih Paket Gratis</a>
+            </div>
+
+            <div class="card plan-card">
+                <h2 class="card-subtitle">Paket Sobat</h2>
+                <p>Unggah hingga 50 gambar.</p>
+                <p>Fitur-fitur tambahan.</p>
+                <a href="{{ url_for('choose_plan', plan='basic') }}" class="btn btn-primary">Pilih Paket Dasar</a>
+            </div>
+
+            <div class="card plan-card">
+                <h2 class="card-subtitle">Paket Saudara</h2>
+                <p>Unlimeted.</p>
+                <p>Semua fitur.</p>
+                <a href="{{ url_for('choose_plan', plan='premium') }}" class="btn btn-primary">Pilih Paket Premium</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

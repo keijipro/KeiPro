@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+    {% block title %} My Music Room {% endblock %}
+    {% block content %}
+    <div class="container">
+       
+       <div class="card music-room-card">
+           <h2 class="card-title">Unggah Musik/Video</h2>
+           <form action="{{ url_for('upload_music') }}" method="post" class="upload-form">
+               <div class="form-group">
+                   <label for="file-upload" class="upload-label">Pilih File (Musik atau Video)</label>
+                   <input type="file" name="file" id="file-upload" required>
+               </div>
+               <div class="form-group">
+                   <label for="title">Judul:</label>
+                   <input type="text" name="title" id="title" placeholder="Judul Lagu atau Video" required>
+               </div>
+               <div class="form-group">
+                   <label for="artist">Artis:</label>
+                   <input type="text" name="artist" id="artist" placeholder="Nama Artis" required>
+               </div>
+               <div class="form-group">
+                   <label for="album_art_file">Pilih Sampul Album (Opsional):</label>
+                   <input type="file" name="album_art_file" id="album_art_file" accept="image/*">
+               </div>
+               <button type="submit" class="btn btn-primary">Unggah</button>
+           </form>
+       </div>
+<div id="upload-overlay" class="upload-overlay hidden">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div id="upload-status-text" class="mt-2">File sedang diunggah...</div>
+</div>
+        
+       
+       <div class="card music-room-card">
+           <h2 class="card-title">My Music Room</h2>
+           <p class="music-room-description">No Worry, Bee Happy</p>
+           
+           <div class="mode-switcher-container">
+               <button id="toggleModeBtn" class="btn btn-secondary mode-toggle-button" data-mode="video"> 
+                   <svg class="video-icon" width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                       <path d="M23 7H1V17H23V7ZM21 9V15H3V9H21ZM13 11V13H11V11H13ZM18 11V13H16V11H18ZM8 11V13H6V11H8Z" fill="currentColor"/>
+                   </svg>
+                   <svg class="music-icon hidden" width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                       <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 16H9V8H11V16ZM15 16H13V8H15V16Z" fill="currentColor"/>
+                   </svg>
+                   <span class="button-text">Switch to Music Mode</span>
+               </button>
+           </div>
+
+           <div class="music-grid">
+               {% for song in music_library %}
+               <div class="music-item">
+                   <div class="media-container">
+                               
+                       <video class="music-player video-player {% if not song.video_url %}no-media{% endif %}" controls preload="metadata" src="{{ song.video_url }}" {% if not song.video_url %}disabled{% endif %}>
+                           <source src="{{ song.video_url }}" type="video/mp4">
+                           Browser Anda tidak mendukung tag video.
+                       </video>
+                    
+                      <img src="{{ song.album_art_url or url_for('static', filename='images/default_album.png') }}" alt="Album Art" class="album-art-fallback hidden">
+                               
+                       <audio class="music-player audio-player hidden {% if not song.audio_url %}no-media{% endif %}" controls preload="metadata" src="{{ song.audio_url }}" {% if not song.audio_url %}disabled{% endif %}>
+                           <source src="{{ song.audio_url }}" type="audio/mpeg">
+                           Browser Anda tidak mendukung tag audio.
+                       </audio>
+                       
+                   </div>
+
+                   <div class="music-details">
+                       <h3 class="song-title">{{ song.title }}</h3>
+                       <p class="artist-name">{{ song.artist }}</p>
+                       <small class="upload-date">Diunggah: {{ song.date_uploaded.strftime('%Y-%m-%d %H:%M') }}</small>
+
+                       {% if current_user == song.user or current_user.is_admin %}
+                           <form action="{{ url_for('delete_music', music_id=song.id) }}" method="POST" style="display:inline-block; margin-top: 10px;">
+                               <button type="submit" class="btn btn-danger delete-button" onclick="return confirm('Apakah Anda yakin ingin menghapus media ini.?')">Hapus</button>
+                           </form>
+                       {% endif %}
+                   </div>
+               </div>
+               {% endfor %}
+
+               
+               {% if not music_library %}
+                   <div class="no-media-message">
+                       <p>Anda belum mengunggah media apapun.</p>
+                   </div>
+               {% endif %}
+           </div>
+       </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/rosemary.js') }}"></script>
+{% endblock %}
+        

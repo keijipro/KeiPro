@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Notifikasi{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="card">
+            <h1 class="card-title">Notifikasi</h1>
+            {% if notifications %}
+                <ul class="notification-list">
+                {% for notification in notifications %}
+                    <li class="notification-item {% if not notification.is_read %}unread{% endif %}">
+                        {% if notification.message_id %}
+                            <a href="{{ url_for('inbox') }}" class="notification-link">
+                                <p class="notification-message">{{ notification.message }} <small class="notification-date">({{ notification.date_created.strftime('%H:%M %d-%m-%Y') }})</small></p>
+                            </a>
+                        {% elif notification.image_id %}
+                            <a href="{{ url_for('gallery') }}#image-{{ notification.image_id }}" class="notification-link">
+                                <p class="notification-message">{{ notification.message }} <small class="notification-date">({{ notification.date_created.strftime('%H:%M %d-%m-%Y') }})</small></p>
+                            </a>
+                        {% else %}
+                            <p class="notification-message">{{ notification.message }} <small class="notification-date">({{ notification.date_created.strftime('%H:%M %d-%m-%Y') }})</small></p>
+                        {% endif %}
+
+                        {% if not notification.is_read %}
+<a href="{{ url_for('read_notifications', notification_id=notification.id) }}" class="btn btn-secondary btn-small">Tandai sebagai sudah dibaca</a>
+
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>Anda tidak memiliki notifikasi baru.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

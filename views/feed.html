@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}All Content{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="card">
+            <h1 class="card-title">All ConTent</h1>
+            <h3>Jelajahi Gambar</h3>
+	<div class="form-group">
+            <form method="get" action="{{ url_for('feed') }}" class="search-bar">
+                <input type="text" name="search" placeholder="Cari..." value="{{ search_query }}">
+                </div>
+        <div class="form-group">
+                <select name="tag">
+                    <option value="">Semua Tag</option>
+                    {% for tag in all_tags %}
+                        <option value="{{ tag.name }}" {% if selected_tag == tag.name %}selected{% endif %}>
+                            {{ tag.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                </div>
+                <button type="submit" class="btn btn-secondary">Cari</button>
+            </form>
+        </div>
+        
+        <div class="gallery">
+            {% if image_files %}
+                {% for image in image_files %} 
+
+                <div class="card gallery-item">
+                    <img class="combrok" src="{{ image.secure_url }}" data-src="{{ image.secure_url }}" alt="{{ image.description }}">
+                    
+                    <div class="image-meta">
+                        <p>Diunggah oleh: <strong><a href="{{ url_for('user_profile', username=image.uploader.username) }}">{{ image.uploader.username }}</a></strong></p>
+                        <p class="image-description">{{ image.description }}</p>
+                        {% if image.tags %}
+                            <p class="image-tags">Tag: 
+                            {% for tag in image.tags %}
+                                <a href="{{ url_for('feed', tag=tag.name, search=search_query) }}" class="tag">{{ tag.name }}</a>
+                            {% endfor %}
+                            </p>
+                        {% endif %}
+                        {% if image.category %}<p class="image-category">Kategori: {{ image.category.name }}</p>{% endif %}
+                    </div>
+
+                <div class="like-section">
+                    <button type="button" class="like-button btn" data-image-id="{{ image.id }}">
+                        <svg class="heart-icon"
+                             data-liked="{% if current_user.is_authenticated and current_user.has_liked_image(image) %}true{% else %}false{% endif %}"
+                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                             >
+                            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
+                        </svg>
+                        <span class="like-count" data-image-id="{{ image.id }}">{{ image.likes|length }}</span>
+                    </button>
+                
+                        {% if current_user.is_authenticated and (current_user.is_admin or current_user.id == image.uploader.id) %}
+                            <form action="{{ url_for('delete_image', image_id=image.id) }}" method="post" class="delete-image-form">
+                                <button type="submit" class="btn btn-danger btn-small">Hapus</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="comments">
+                        <h4>Komentar ({{ image.comments|length }})</h4>
+                        <div class="comments-list">
+                            {% for comment in image.comments %}
+                                <p class="comment-item">
+                                    <strong><a href="{{ url_for('user_profile', username=comment.commenter.username) }}">{{ comment.commenter.username }}</a></strong>: {{ comment.content }}
+                                    {% if current_user.is_authenticated and (current_user.is_admin or current_user.id == comment.commenter.id) %}
+                                        <form action="{{ url_for('delete_comment', comment_id=comment.id) }}" method="post" class="delete-comment-form">
+                                            <button type="submit" class="btn btn-danger btn-small">Hapus</button>
+                                        </form>
+                                    {% endif %}
+                                </p>
+                            {% endfor %}
+                        </div>
+                        
+                        <form method="post" action="{{ url_for('comment_image', image_id=image.id) }}" class="comment-form">
+                            <textarea name="content" placeholder="Tambahkan komentar..." required></textarea>
+                            <button type="submit" class="btn btn-primary">Kirim Komentar</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Tidak ada gambar yang cocok.</p>
+            {% endif %}
+        </div>
+        
+    </div>
+<div class="card music-section mt-5">
+    <h1>Musik</h1>
+    <hr>
+    {% if music_library %}
+    <div class="music-grid">
+        {% for song in music_library %}
+        <div class="music-item" data-mode="video">
+            <div class="media-container">
+                <video class="music-player video-player" controls preload="metadata" data-src="{{ song.video_url }}">
+                    <source src="{{ song.video_url }}" type="video/mp4">
+                    Browser Anda tidak mendukung tag video.
+                </video>
+            </div>
+            
+            <div class="music-mode-content hidden">
+                <div class="album-art-container">
+                    {% if song.album_art_url %}
+                        <img src="{{ song.album_art_url }}" alt="Album Art" class="album-art-fallback">
+                    {% else %}
+                        <img src="{{ song.album_art }}" alt="Default Album Art" class="album-art-fallback">
+                    {% endif %}
+                </div>
+                <audio class="audio-player" controls preload="metadata" data-src="{{ song.audio_url }}">
+                    <source src="{{ song.audio_url }}" type="audio/mpeg">
+                    Browser Anda tidak mendukung tag audio.
+                </audio>
+            </div>
+
+            <div class="music-details">
+                <h3 class="song-title">{{ song.title }}</h3>
+                <p class="artist-name">{{ song.artist }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Tidak ada musik yang ditemukan.</p>
+    {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/ajax.js') }}"></script>
+<script src="{{ url_for('static', filename='js/rosemary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/xstroks.js') }}"</script>
+{% endblock %}
+
