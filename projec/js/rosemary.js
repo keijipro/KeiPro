@@ -88,6 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const mainFileInput = uploadForm.querySelector('input[name="file"]');
     const albumArtInput = uploadForm.querySelector('input[name="album_art_file"]');
+
+    const uploadOverlay = document.getElementById('upload-overlay');
+    const uploadStatusText = document.getElementById('upload-status-text');
     
     
     const CLOUDINARY_CLOUD_NAME = 'di0sdr2no';
@@ -118,7 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        console.log('Mengunggah file...');
+        if (uploadOverlay) {
+            uploadOverlay.classList.remove('hidden');
+        }
+        if (uploadStatusText) {
+            uploadStatusText.textContent = 'File sedang diunggah. Mohon tunggu...';
+        }
+        uploadForm.querySelector('button[type="submit"]').disabled = true;
 
         Promise.all([
             uploadFile(mainFile, 'auto'),
@@ -146,6 +155,11 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
+            
+            if (uploadOverlay) {
+                uploadOverlay.classList.add('hidden');
+            }
+
             if (data.success) {
                 alert(data.message);
                 window.location.reload();
@@ -154,8 +168,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            // Sembunyikan overlay dan tampilkan pesan error
+            if (uploadOverlay) {
+                uploadOverlay.classList.add('hidden');
+            }
             alert('Terjadi kesalahan: ' + error.message);
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            // Aktifkan kembali tombol submit
+            uploadForm.querySelector('button[type="submit"]').disabled = false;
         });
     });
 });
