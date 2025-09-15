@@ -60,6 +60,5 @@
 
             statusDiv.textContent = 'Semua gambar selesai diunggah!';
             alert('Semua gambar selesai diunggah!');
-            window.location.reload();
         });
     });
