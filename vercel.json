@@ -16,5 +16,5 @@
       "dest": "kei.py"
     }
   ],
-  "buildCommand": "pip install -r requirements.txt && python -m flask db upgrade",
+  "buildCommand": "pip install -r requirements.txt && python -m flask db upgrade"
 }
