@@ -276,7 +276,7 @@ def inject_notifications():
 
 @app.route('/google78b016121e7d19dc.html')
 def google_verification():
-    return send_from_directory('views', 'google78b016121e7d19dc.html')
+    return send_from_directory('assets', 'google78b016121e7d19dc.html')
     
 @app.route('/')
 @login_required
