@@ -1,4 +1,4 @@
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () {
         const uploadForm = document.querySelector('.form-upload');
         const fileInput = document.getElementById('file-upload'); 
 
