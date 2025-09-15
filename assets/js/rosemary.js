@@ -1,10 +1,43 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     const toggleModeBtn = document.getElementById('toggleModeBtn');
-    const musicItems = document.querySelectorAll('.music-item');
+    const contentContainer = document.getElementById('content-display-container');
+    const videoShortsList = document.querySelector('.video-pendek-list');
+    const videoList = document.querySelector('.video-list');
+    const musicList = document.querySelector('.music-list');
+
     const videoIcon = toggleModeBtn ? toggleModeBtn.querySelector('.video-icon') : null;
     const musicIcon = toggleModeBtn ? toggleModeBtn.querySelector('.music-icon') : null;
     const buttonText = toggleModeBtn ? toggleModeBtn.querySelector('.button-text') : null;
+
+    const playlist = [];
+    document.querySelectorAll('.media-card-vertical video, .media-card-horizontal video').forEach(player => {
+        if (!player.classList.contains('no-media')) {
+            playlist.push(player);
+        }
+    });
+
+    let currentTrackIndex = -1;
+
+    function findCurrentTrackIndex(player) {
+        return playlist.findIndex(track => track === player);
+    }
+
+    function playNextTrack() {
+        currentTrackIndex++;
+        if (currentTrackIndex >= playlist.length) {
+            currentTrackIndex = 0;
+        }
+
+        if (playlist[currentTrackIndex]) {
+            playlist[currentTrackIndex].play();
+        }
+    }
+
+    function handlePlayerEnded() {
+        playNextTrack();
+    }
+    // --- Akhir bagian baru ---
 
     if (toggleModeBtn) {
         if (!toggleModeBtn.dataset.mode) {
@@ -20,36 +53,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        function updateAllPlayersDisplay(globalMode) {
-            musicItems.forEach(item => {
-                const videoPlayer = item.querySelector('.video-player');
-                const audioPlayer = item.querySelector('.audio-player');
-                const albumArtFallback = item.querySelector('.album-art-fallback');
+        function updateDisplayMode(mode) {
+            if (videoShortsList) videoShortsList.classList.add('hidden');
+            if (videoList) videoList.classList.add('hidden');
+            if (musicList) musicList.classList.add('hidden');
 
-                
-                if (videoPlayer) videoPlayer.classList.add('hidden');
-                if (audioPlayer) audioPlayer.classList.add('hidden');
-                if (albumArtFallback) albumArtFallback.classList.add('hidden');
-
-                
-                if (globalMode === 'video') {
-                    if (videoPlayer && videoPlayer.src) {
-                        videoPlayer.classList.remove('hidden');
-                    } else if (albumArtFallback && albumArtFallback.src) {
-                        albumArtFallback.classList.remove('hidden');
-                    }
-                } else { 
-                    if (audioPlayer && audioPlayer.src) {
-                        audioPlayer.classList.remove('hidden');
-                    }
-                    if (albumArtFallback && albumArtFallback.src) {
-                        albumArtFallback.classList.remove('hidden');
-                    }
-                }
-            });
+            if (mode === 'video') {
+                if (videoShortsList) videoShortsList.classList.remove('hidden');
+                if (videoList) videoList.classList.remove('hidden');
+            } else {
+                if (musicList) musicList.classList.remove('hidden');
+            }
         }
 
-        updateAllPlayersDisplay(toggleModeBtn.dataset.mode);
+        updateDisplayMode(toggleModeBtn.dataset.mode);
 
         toggleModeBtn.addEventListener('click', () => {
             stopAllMedia();
@@ -59,28 +76,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (videoIcon) videoIcon.classList.add('hidden');
                 if (musicIcon) musicIcon.classList.remove('hidden');
                 if (buttonText) buttonText.textContent = 'Switch to Video Mode';
-                updateAllPlayersDisplay('music');
+                updateDisplayMode('music');
             } else {
                 toggleModeBtn.dataset.mode = 'video';
                 if (videoIcon) videoIcon.classList.remove('hidden');
                 if (musicIcon) musicIcon.classList.add('hidden');
                 if (buttonText) buttonText.textContent = 'Switch to Music Mode';
-                updateAllPlayersDisplay('video');
+                updateDisplayMode('video');
             }
         });
 
-        document.querySelectorAll('video, audio').forEach(player => {
+        document.querySelectorAll('video').forEach(player => {
             player.addEventListener('play', () => {
-                document.querySelectorAll('video, audio').forEach(otherPlayer => {
-                    if (otherPlayer !== player) {
-                        otherPlayer.pause();
-                    }
-                });
+                stopAllMedia();
             });
+            player.addEventListener('ended', handlePlayerEnded);
         });
     }
 
-    
     const uploadForm = document.querySelector('.upload-form');
     if (!uploadForm) {
         return;
@@ -91,17 +104,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const uploadOverlay = document.getElementById('upload-overlay');
     const uploadStatusText = document.getElementById('upload-status-text');
-    
-    
+
+
     const CLOUDINARY_CLOUD_NAME = 'di0sdr2no';
     const CLOUDINARY_UPLOAD_PRESET = 'KeiApp';
 
-    
+
     const uploadFile = (file, resourceType) => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-        
+
         return fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`, {
             method: 'POST',
             body: formData
@@ -109,13 +122,13 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json());
     };
 
-    
+
     uploadForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
         const mainFile = mainFileInput.files[0];
         const albumArtFile = albumArtInput.files[0];
-        
+
         if (!mainFile) {
             alert('Silakan pilih file musik atau video terlebih dahulu!');
             return;
@@ -137,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!mainResult || !mainResult.secure_url) {
                 throw new Error('Gagal mengunggah file utama.');
             }
-            
+
             const formData = new FormData();
             formData.append('title', uploadForm.querySelector('input[name="title"]').value);
             formData.append('artist', uploadForm.querySelector('input[name="artist"]').value);
@@ -155,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
-            
+
             if (uploadOverlay) {
                 uploadOverlay.classList.add('hidden');
             }
@@ -168,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .catch(error => {
-            // Sembunyikan overlay dan tampilkan pesan error
             if (uploadOverlay) {
                 uploadOverlay.classList.add('hidden');
             }
@@ -176,7 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error:', error);
         })
         .finally(() => {
-            // Aktifkan kembali tombol submit
             uploadForm.querySelector('button[type="submit"]').disabled = false;
         });
     });
