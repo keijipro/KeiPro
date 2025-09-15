@@ -517,6 +517,7 @@ def comment_image(image_id):
     flash('Komentar berhasil ditambahkan.', 'success')
     return redirect(request.referrer or url_for('gallery'))
 
+
 @app.route('/gallery', methods=['GET', 'POST'])
 @login_required
 def gallery():
@@ -527,11 +528,15 @@ def gallery():
     if request.method == 'POST':
         uploaded_files = request.files.getlist('files')
         if not uploaded_files or uploaded_files[0].filename == '':
-            flash('Tidak ada file yang dipilih untuk diunggah.', 'danger')
-            return redirect(request.url)
+            
+            return jsonify({'success': False, 'error': 'Tidak ada file yang dipilih untuk diunggah.'})
+        
         description = request.form.get('description', '')
         category_id = request.form.get('category')
         tags_input = request.form.get('tags', '')
+        
+        
+        upload_results = []
         for file in uploaded_files:
             if file and allowed_file(file.filename):
                 try:
@@ -554,14 +559,17 @@ def gallery():
                                 db.session.flush()
                             new_image.tags.append(tag)
                     db.session.commit()
-                    flash(f'Gambar {file.filename} berhasil diunggah!', 'success')
+                    upload_results.append({'filename': file.filename, 'success': True})
                 except Exception as e:
                     db.session.rollback()
                     logging.error(f"Gagal mengunggah file {file.filename}: {e}")
-                    flash(f"Gagal mengunggah file {file.filename}: {e}", 'danger')
+                    upload_results.append({'filename': file.filename, 'success': False, 'error': str(e)})
             else:
-                flash(f"Gagal mengunggah file {file.filename}: Format tidak diizinkan.", 'danger')
-        return redirect(url_for('gallery'))
+                upload_results.append({'filename': file.filename, 'success': False, 'error': 'Format tidak diizinkan.'})
+        
+        
+        return jsonify({'results': upload_results})
+
     image_files_query = GalleryImage.query.filter_by(user_id=current_user.id)
     if search_query:
         search_like = f"%{search_query}%"
@@ -572,6 +580,7 @@ def gallery():
         tag = Tag.query.filter_by(name=selected_tag).first()
         if tag:
             image_files_query = image_files_query.filter(GalleryImage.tags.contains(tag))
+
     image_files = image_files_query.order_by(GalleryImage.date_uploaded.desc()).all()
     all_tags = Tag.query.all()
     
@@ -585,8 +594,8 @@ def gallery():
         search_query=search_query,
         selected_tag=selected_tag,
         cloudinary_folders=folder_names
-    )
-    
+                                     )
+        
 
 @app.route('/image/<int:image_id>/edit', methods=['GET', 'POST'])
 @login_required
