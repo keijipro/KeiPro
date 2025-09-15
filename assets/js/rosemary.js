@@ -4,48 +4,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const videoContainer = document.querySelector('.video-container');
     const musicList = document.querySelector('.music-list');
     
-    if (toggleModeBtn && videoContainer && musicList) {
-        
-        const videoIcon = toggleModeBtn.querySelector('.video-icon');
-        const musicIcon = toggleModeBtn.querySelector('.music-icon');
-        const buttonText = toggleModeBtn.querySelector('.button-text');
-        
-        let currentMode = toggleModeBtn.dataset.mode || 'video';
-        
-        updateDisplayMode(currentMode);
+    // Ini memastikan elemen-elemen penting ada
+    if (!toggleModeBtn || !videoContainer || !musicList) {
+        return; 
+    }
 
-        function stopAllMedia() {
-            document.querySelectorAll('video, audio').forEach(player => {
-                if (!player.paused) {
-                    player.pause();
-                    player.currentTime = 0;
-                }
-            });
-        }
+    const videoIcon = toggleModeBtn.querySelector('.video-icon');
+    const musicIcon = toggleModeBtn.querySelector('.music-icon');
+    const buttonText = toggleModeBtn.querySelector('.button-text');
+    
+    let currentMode = toggleModeBtn.dataset.mode || 'video';
+    
+    updateDisplayMode(currentMode);
 
-        function updateDisplayMode(mode) {
-            if (mode === 'video') {
-                videoContainer.classList.remove('hidden');
-                musicList.classList.add('hidden');
-                videoIcon.classList.remove('hidden');
-                musicIcon.classList.add('hidden');
-                buttonText.textContent = 'Switch to Music Mode';
-            } else {
-                videoContainer.classList.add('hidden');
-                musicList.classList.remove('hidden');
-                videoIcon.classList.add('hidden');
-                musicIcon.classList.remove('hidden');
-                buttonText.textContent = 'Switch to Video Mode';
+    function stopAllMedia() {
+        document.querySelectorAll('video, audio').forEach(player => {
+            if (!player.paused) {
+                player.pause();
+                player.currentTime = 0;
             }
-        }
-        
-        toggleModeBtn.addEventListener('click', () => {
-            stopAllMedia();
-            currentMode = (currentMode === 'video') ? 'music' : 'video';
-            toggleModeBtn.dataset.mode = currentMode;
-            updateDisplayMode(currentMode);
         });
     }
+
+    function updateDisplayMode(mode) {
+        if (mode === 'video') {
+            videoContainer.classList.remove('hidden');
+            musicList.classList.add('hidden');
+            videoIcon.classList.remove('hidden');
+            musicIcon.classList.add('hidden');
+            buttonText.textContent = 'Switch to Music Mode';
+        } else {
+            videoContainer.classList.add('hidden');
+            musicList.classList.remove('hidden');
+            videoIcon.classList.add('hidden');
+            musicIcon.classList.remove('hidden');
+            buttonText.textContent = 'Switch to Video Mode';
+        }
+    }
+    
+    toggleModeBtn.addEventListener('click', () => {
+        stopAllMedia();
+        currentMode = (currentMode === 'video') ? 'music' : 'video';
+        toggleModeBtn.dataset.mode = currentMode;
+        updateDisplayMode(currentMode);
+    });
+
+    // Hentikan media lain saat salah satunya diputar
+    document.querySelectorAll('video, audio').forEach(player => {
+        player.addEventListener('play', () => {
+            document.querySelectorAll('video, audio').forEach(otherPlayer => {
+                if (otherPlayer !== player && !otherPlayer.paused) {
+                    otherPlayer.pause();
+                }
+            });
+        });
+    });
 
     const uploadForm = document.querySelector('.upload-form');
     if (uploadForm) {
@@ -136,16 +149,4 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-
-    // Hentikan media lain saat salah satunya diputar
-    document.querySelectorAll('video, audio').forEach(player => {
-        player.addEventListener('play', () => {
-            document.querySelectorAll('video, audio').forEach(otherPlayer => {
-                if (otherPlayer !== player && !otherPlayer.paused) {
-                    otherPlayer.pause();
-                }
-            });
-        });
-    });
 });
-
