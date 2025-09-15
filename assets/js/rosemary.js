@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const musicIcon = toggleModeBtn ? toggleModeBtn.querySelector('.music-icon') : null;
     const buttonText = toggleModeBtn ? toggleModeBtn.querySelector('.button-text') : null;
     
-    
     const playlist = [];
     document.querySelectorAll('.media-card-vertical video, .media-card-horizontal video').forEach(player => {
         if (!player.classList.contains('no-media')) {
@@ -25,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function playNextTrack() {
         currentTrackIndex++;
         if (currentTrackIndex >= playlist.length) {
-            currentTrackIndex = 0; // Ulang ke awal playlist
+            currentTrackIndex = 0;
         }
 
         if (playlist[currentTrackIndex]) {
@@ -36,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function handlePlayerEnded() {
         playNextTrack();
     }
-    // --- Akhir bagian baru ---
 
     if (toggleModeBtn) {
         if (!toggleModeBtn.dataset.mode) {
@@ -64,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-
         toggleModeBtn.addEventListener('click', () => {
             stopAllMedia();
             let currentGlobalMode = toggleModeBtn.dataset.mode;
