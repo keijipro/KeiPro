@@ -5,13 +5,13 @@ document.addEventListener('DOMContentLoaded', function() {
             svgElement.setAttribute('stroke', 'none');
         } else {
             svgElement.setAttribute('fill', 'none');
-            svgElement.setAttribute('stroke', '#ccc');   // Garis tepi abu-abu (atau warna default kamu)
-            svgElement.setAttribute('stroke-width', '2'); // Tebal garis
+            svgElement.setAttribute('stroke', '#ccc');
+            svgElement.setAttribute('stroke-width', '2'); 
         }
     }
 
     document.querySelectorAll('.heart-icon').forEach(svgElement => {
-        const isLikedInitial = svgElement.dataset.liked === 'true'; // Baca status dari data-liked HTML
+        const isLikedInitial = svgElement.dataset.liked === 'true'; 
         updateHeartIcon(svgElement, isLikedInitial);
     });
 
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success) {
                     likeCountSpan.textContent = data.like_count;
-                    updateHeartIcon(svgIcon, data.liked); // data.liked ini dari respons JSON server (Python)
+                    updateHeartIcon(svgIcon, data.liked); 
                 }
             })
             .catch(error => console.error('Error:', error));
