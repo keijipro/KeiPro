@@ -850,7 +850,6 @@ cite {
     transform: translateY(0);
 }
 
-
 .main-content-container, .music-room-container {
     max-width: 900px;
     margin: 20px auto;
@@ -869,15 +868,15 @@ cite {
     margin-bottom: 20px;
 }
 
-
+/* Gaya Bagian Upload */
 .upload-section {
-    background-color: var(--bg-color-soft);
+    background-color: #1f1f1f;
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 30px;
 }
 
-
+/* Gaya Tombol Mode */
 .mode-switcher-container {
     display: flex;
     justify-content: center;
@@ -889,10 +888,10 @@ cite {
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background-color: var(--secondary-color-soft);
+    background-color: #333;
     border: none;
     border-radius: 8px;
-    color: var(--text-color-soft);
+    color: white;
     cursor: pointer;
     font-size: 16px;
 }
@@ -905,7 +904,7 @@ cite {
     display: none;
 }
 
-
+/* Gaya Daftar Video Pendek (Horizontal) */
 .video-container.hidden, .music-list.hidden {
     display: none;
 }
@@ -930,7 +929,7 @@ cite {
 
 .media-card-horizontal .thumbnail-container {
     width: 100%;
-    height: 100px; 
+    height: 100px;
     overflow: hidden;
     border-radius: 8px;
     position: relative;
@@ -946,7 +945,7 @@ cite {
     margin-top: 5px;
 }
 
-
+/* Gaya Daftar Video Normal (Vertikal) */
 .video-list {
     display: flex;
     flex-direction: column;
@@ -956,7 +955,7 @@ cite {
 .media-card-vertical {
     display: flex;
     align-items: center;
-    background-color: var(--bg-color-soft);
+    background-color: #1f1f1f;
     padding: 10px;
     border-radius: 8px;
     gap: 15px;
@@ -991,10 +990,11 @@ cite {
 
 .artist-name-vertical {
     font-size: 14px;
-    color: var(--heading-color-soft);
+    color: #b3b3b3;
     margin: 0;
 }
 
+/* Gaya Mode Musik */
 .music-list {
     display: none;
     flex-direction: column;
@@ -1005,6 +1005,7 @@ cite {
     display: none;
 }
 
+/* Gaya Tombol Hapus */
 .delete-button {
     background-color: #dc3545;
     border: none;
@@ -1018,7 +1019,7 @@ cite {
     background-color: #c82333;
 }
 
-	
+
 @media (min-width: 568px) {
     body {
         padding-top: 60px;
