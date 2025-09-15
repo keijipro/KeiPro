@@ -8,6 +8,7 @@ import cloudinary.api
 from cloudinary.utils import cloudinary_url
 from cloudinary.uploader import upload
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import joinedload
 import psycopg2
 from flask_migrate import Migrate
 from datetime import datetime
@@ -570,7 +571,10 @@ def gallery():
         
         return jsonify({'results': upload_results})
 
-    image_files_query = GalleryImage.query.filter_by(user_id=current_user.id)
+    image_files_query = GalleryImage.query.filter_by(user_id=current_user.id).options(
+        joinedload(GalleryImage.comments),
+        joinedload(GalleryImage.tags)
+    )
     if search_query:
         search_like = f"%{search_query}%"
         image_files_query = image_files_query.filter(GalleryImage.description.ilike(search_like))
