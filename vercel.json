@@ -17,10 +17,4 @@
     }
   ],
   "buildCommand": "pip install -r requirements.txt && python -m flask db upgrade",
-  "crons": [
-    {
-      "path": "/ping",
-      "schedule": "*/5 * * * *"
-    }
-  ]
 }
