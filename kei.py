@@ -573,7 +573,7 @@ def gallery():
 
     image_files_query = GalleryImage.query.filter_by(user_id=current_user.id).options(
         subqueryload(GalleryImage.comments),
-        subquerydload(GalleryImage.tags)
+        subqueryload(GalleryImage.tags)
     )
     if search_query:
         search_like = f"%{search_query}%"
