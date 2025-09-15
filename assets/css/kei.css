@@ -850,6 +850,7 @@ cite {
     transform: translateY(0);
 }
 
+
 .main-content-container, .music-room-container {
     max-width: 900px;
     margin: 20px auto;
@@ -868,12 +869,14 @@ cite {
     margin-bottom: 20px;
 }
 
+
 .upload-section {
-    background-color: #1f1f1f;
+    background-color: var(--bg-color-soft);
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 30px;
 }
+
 
 .mode-switcher-container {
     display: flex;
@@ -886,10 +889,10 @@ cite {
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background-color: #333;
+    background-color: var(--secondary-color-soft);
     border: none;
     border-radius: 8px;
-    color: white;
+    color: var(--text-color-soft);
     cursor: pointer;
     font-size: 16px;
 }
@@ -899,6 +902,11 @@ cite {
 }
 
 .mode-toggle-button .hidden {
+    display: none;
+}
+
+
+.video-container.hidden, .music-list.hidden {
     display: none;
 }
 
@@ -938,6 +946,7 @@ cite {
     margin-top: 5px;
 }
 
+
 .video-list {
     display: flex;
     flex-direction: column;
@@ -947,7 +956,7 @@ cite {
 .media-card-vertical {
     display: flex;
     align-items: center;
-    background-color: #1f1f1f;
+    background-color: var(--bg-color-soft);
     padding: 10px;
     border-radius: 8px;
     gap: 15px;
@@ -982,7 +991,7 @@ cite {
 
 .artist-name-vertical {
     font-size: 14px;
-    color: #b3b3b3;
+    color: var(--heading-color-soft);
     margin: 0;
 }
 
@@ -1009,6 +1018,7 @@ cite {
     background-color: #c82333;
 }
 
+	
 @media (min-width: 568px) {
     body {
         padding-top: 60px;
