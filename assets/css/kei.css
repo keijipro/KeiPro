@@ -850,175 +850,149 @@ cite {
     transform: translateY(0);
 }
 
-.main-content-container, .music-room-container {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 0 15px;
+
+.music-room-description {
+    text-align: center;
+    font-style: italic;
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-color-soft);
 }
 
-.section-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.section-description {
-    font-size: 14px;
-    color: #b3b3b3;
-    margin-bottom: 20px;
-}
-
-/* Gaya Bagian Upload */
-.upload-section {
-    background-color: #1f1f1f;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 30px;
-}
-
-/* Gaya Tombol Mode */
 .mode-switcher-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
+    text-align: center;
+    margin-bottom: 1.5rem;
 }
 
 .mode-toggle-button {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 20px;
-    background-color: #333;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
+    font-size: 0.85rem;
+    padding: 0.7rem 1.4rem;
+    border-radius: 30px;
+    box-shadow: 
+        3px 3px 6px var(--shadow-dark), 
+        -3px -3px 6px var(--shadow-light);
+    background-color: var(--card-color-soft);
+    color: var(--text-color-soft);
+    transition: all 0.2s ease-in-out;
 }
 
 .mode-toggle-button:hover {
-    background-color: #555;
+    box-shadow: 
+        4px 4px 8px var(--shadow-dark), 
+        -4px -4px 8px var(--shadow-light);
+    transform: translateY(-2px);
 }
 
-.mode-toggle-button .hidden {
-    display: none;
+.mode-toggle-button:active {
+    box-shadow: 
+        inset 2px 2px 4px var(--shadow-dark), 
+        inset -2px -2px 4px var(--shadow-light);
+    transform: translateY(0);
 }
 
-/* Gaya Daftar Video Pendek (Horizontal) */
-.video-container.hidden, .music-list.hidden {
-    display: none;
+.mode-toggle-button svg {
+    font-size: 1rem;
+    color: var(--primary-color-soft);
 }
 
-.video-pendek-list {
-    display: flex;
-    overflow-x: auto;
+.music-grid {
+    display: grid;
     gap: 15px;
-    padding-bottom: 10px;
-    scroll-snap-type: x mandatory;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
 }
 
-.video-pendek-list::-webkit-scrollbar {
-    display: none;
+.music-item {
+    background-color: var(--card-color-soft);
+    border-radius: 12px;
+    box-shadow:
+        5px 5px 10px var(--shadow-dark),
+        -5px -5px 10px var(--shadow-light);
+    padding: 1rem;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.media-card-horizontal {
-    flex: 0 0 150px;
-    scroll-snap-align: start;
-    text-align: left;
+.music-item:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        8px 8px 16px var(--shadow-dark),
+        -8px -8px 16px var(--shadow-light);
 }
-
-.media-card-horizontal .thumbnail-container {
-    width: 100%;
-    height: 100px;
-    overflow: hidden;
-    border-radius: 8px;
+.media-container {
     position: relative;
-}
-
-.media-card-horizontal .music-player {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.media-card-horizontal .media-details {
-    margin-top: 5px;
-}
-
-/* Gaya Daftar Video Normal (Vertikal) */
-.video-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.media-card-vertical {
-    display: flex;
-    align-items: center;
-    background-color: #1f1f1f;
-    padding: 10px;
+    padding-bottom: 56.25%; 
+    height: 0;
+    margin-bottom: 0.7rem;
     border-radius: 8px;
-    gap: 15px;
-}
-
-.media-card-vertical .media-thumbnail-vertical {
-    width: 80px;
-    height: 80px;
     overflow: hidden;
-    border-radius: 8px;
+    box-shadow:
+        inset 2px 2px 4px var(--inset-shadow-dark),
+        inset -2px -2px 4px var(--inset-shadow-light);
 }
 
-.media-card-vertical .music-player {
+.music-player {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 8px;
 }
 
-.media-card-vertical .media-details-vertical {
-    flex-grow: 1;
+.album-art-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    z-index: 0; 
+    display: block; 
 }
 
-.media-card-vertical .media-actions {
-    text-align: right;
+.music-details {
+    padding: 0;
+    margin-top: auto; 
 }
 
-.song-title-vertical {
-    font-size: 16px;
+.song-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--heading-color-soft);
+    margin: 0 0 0.3rem 0;
+}
+
+.artist-name {
+    font-size: 0.75rem;
+    color: var(--secondary-color-soft);
     margin: 0;
-    font-weight: bold;
 }
-
-.artist-name-vertical {
-    font-size: 14px;
-    color: #b3b3b3;
-    margin: 0;
-}
-
-/* Gaya Mode Musik */
-.music-list {
-    display: none;
-    flex-direction: column;
-    gap: 10px;
-}
-
 .hidden {
-    display: none;
+    display: none !important;
+}
+.music-details audio.sempak {
+    width: 100%;
+    align-items: center; 
+    max-width: 280px;
+    height: 35px; 
+    margin-bottom: 8px;
+    outline: none;
 }
 
-/* Gaya Tombol Hapus */
-.delete-button {
-    background-color: #dc3545;
+.music-details audio.sempak::-webkit-media-controls-panel {
+    background-color: var(--bg-color-soft);
     border: none;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
+    color: var(--accent-color) ;
 }
-
-.delete-button:hover {
-    background-color: #c82333;
-}
-
 
 @media (min-width: 568px) {
     body {
