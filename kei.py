@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, current_app, abort
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, current_app, abort, send_from_directory
 from werkzeug.utils import secure_filename
 import cloudinary
 import cloudinary.uploader
@@ -274,6 +274,10 @@ def inject_notifications():
         return dict(unread_count=unread_count)
     return dict(unread_count=0)
 
+@app.route('/google78b016121e7d19dc.html')
+def google_verification():
+    return send_from_directory('views', 'google78b016121e7d19dc.html')
+    
 @app.route('/')
 @login_required
 def HomeKei():
