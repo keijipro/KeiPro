@@ -1,15 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     const toggleModeBtn = document.getElementById('toggleModeBtn');
-    const contentContainer = document.getElementById('content-display-container');
-    const videoShortsList = document.querySelector('.video-pendek-list');
-    const videoList = document.querySelector('.video-list');
+    const videoContainer = document.querySelector('.video-container');
     const musicList = document.querySelector('.music-list');
-
+    
     const videoIcon = toggleModeBtn ? toggleModeBtn.querySelector('.video-icon') : null;
     const musicIcon = toggleModeBtn ? toggleModeBtn.querySelector('.music-icon') : null;
     const buttonText = toggleModeBtn ? toggleModeBtn.querySelector('.button-text') : null;
-
+    
+    
     const playlist = [];
     document.querySelectorAll('.media-card-vertical video, .media-card-horizontal video').forEach(player => {
         if (!player.classList.contains('no-media')) {
@@ -26,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function playNextTrack() {
         currentTrackIndex++;
         if (currentTrackIndex >= playlist.length) {
-            currentTrackIndex = 0;
+            currentTrackIndex = 0; // Ulang ke awal playlist
         }
 
         if (playlist[currentTrackIndex]) {
@@ -43,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!toggleModeBtn.dataset.mode) {
             toggleModeBtn.dataset.mode = 'video';
         }
+        
+        updateDisplayMode(toggleModeBtn.dataset.mode);
 
         function stopAllMedia() {
             document.querySelectorAll('video, audio').forEach(player => {
@@ -54,19 +55,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function updateDisplayMode(mode) {
-            if (videoShortsList) videoShortsList.classList.add('hidden');
-            if (videoList) videoList.classList.add('hidden');
-            if (musicList) musicList.classList.add('hidden');
-
             if (mode === 'video') {
-                if (videoShortsList) videoShortsList.classList.remove('hidden');
-                if (videoList) videoList.classList.remove('hidden');
+                if (videoContainer) videoContainer.classList.remove('hidden');
+                if (musicList) musicList.classList.add('hidden');
             } else {
+                if (videoContainer) videoContainer.classList.add('hidden');
                 if (musicList) musicList.classList.remove('hidden');
             }
         }
-
-        updateDisplayMode(toggleModeBtn.dataset.mode);
+        
 
         toggleModeBtn.addEventListener('click', () => {
             stopAllMedia();
@@ -104,17 +101,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const uploadOverlay = document.getElementById('upload-overlay');
     const uploadStatusText = document.getElementById('upload-status-text');
-
-
+    
     const CLOUDINARY_CLOUD_NAME = 'di0sdr2no';
     const CLOUDINARY_UPLOAD_PRESET = 'KeiApp';
-
 
     const uploadFile = (file, resourceType) => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-
+        
         return fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`, {
             method: 'POST',
             body: formData
@@ -122,13 +117,12 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json());
     };
 
-
     uploadForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
         const mainFile = mainFileInput.files[0];
         const albumArtFile = albumArtInput.files[0];
-
+        
         if (!mainFile) {
             alert('Silakan pilih file musik atau video terlebih dahulu!');
             return;
@@ -150,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!mainResult || !mainResult.secure_url) {
                 throw new Error('Gagal mengunggah file utama.');
             }
-
+            
             const formData = new FormData();
             formData.append('title', uploadForm.querySelector('input[name="title"]').value);
             formData.append('artist', uploadForm.querySelector('input[name="artist"]').value);
@@ -168,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
-
+            
             if (uploadOverlay) {
                 uploadOverlay.classList.add('hidden');
             }
