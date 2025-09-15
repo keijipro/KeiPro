@@ -574,21 +574,9 @@ def gallery():
             image_files_query = image_files_query.filter(GalleryImage.tags.contains(tag))
     image_files = image_files_query.order_by(GalleryImage.date_uploaded.desc()).all()
     all_tags = Tag.query.all()
-    try:
-        resources_result = cloudinary.api.resources(
-            type="upload",
-            prefix="",
-            max_results=500
-        )
-        folder_names = set()
-        for resource in resources_result.get('resources', []):
-            if '/' in resource['public_id']:
-                folder = resource['public_id'].split('/')[0]
-                folder_names.add(folder)
-        folder_names = sorted(list(folder_names))
-    except Exception as e:
-        logging.error(f"Gagal mengambil folder dari Cloudinary: {e}")
-        folder_names = []
+    
+    folder_names = [] 
+
     return render_template('gallery.html',
         image_files=image_files,
         categories=user_categories,
@@ -598,6 +586,7 @@ def gallery():
         selected_tag=selected_tag,
         cloudinary_folders=folder_names
     )
+    
 
 @app.route('/image/<int:image_id>/edit', methods=['GET', 'POST'])
 @login_required
