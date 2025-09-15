@@ -2,7 +2,7 @@
     {% block title %} My Music Room {% endblock %}
     {% block content %}
     <div class="main-content-container">
-        
+       
        <div class="upload-section">
            <h2 class="section-title">Unggah Musik/Video</h2>
            <form action="{{ url_for('upload_music') }}" method="post" class="upload-form">
@@ -53,51 +53,52 @@
         </div>
 
         <div id="content-display-container">
-            
-            <h2 class="list-title">Video Pendek</h2>
-            <div class="video-pendek-list">
-                {% for song in music_library[:3] %}
-                <div class="media-card-horizontal">
-                    <div class="thumbnail-container">
-                        <video class="music-player video-player {% if not song.video_url %}no-media{% endif %}" controls preload="metadata" src="{{ song.video_url }}" {% if not song.video_url %}disabled{% endif %}>
-                            <source src="{{ song.video_url }}" type="video/mp4">
-                            Browser Anda tidak mendukung tag video.
-                        </video>
+            <div class="video-container">
+                <h2 class="list-title">Video Pendek</h2>
+                <div class="video-pendek-list">
+                    {% for song in music_library[:3] %}
+                    <div class="media-card-horizontal">
+                        <div class="thumbnail-container">
+                            <video class="music-player video-player {% if not song.video_url %}no-media{% endif %}" controls preload="metadata" src="{{ song.video_url }}" {% if not song.video_url %}disabled{% endif %}>
+                                <source src="{{ song.video_url }}" type="video/mp4">
+                                Browser Anda tidak mendukung tag video.
+                            </video>
+                        </div>
+                        <div class="media-details">
+                            <h3 class="song-title">{{ song.title }}</h3>
+                            <p class="artist-name">{{ song.artist }}</p>
+                        </div>
                     </div>
-                    <div class="media-details">
-                        <h3 class="song-title">{{ song.title }}</h3>
-                        <p class="artist-name">{{ song.artist }}</p>
-                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
 
-            <hr>
-            
-            <h2 class="list-title">Video</h2>
-            <div class="video-list">
-                {% for song in music_library[3:] %}
-                <div class="media-card-vertical">
-                    <div class="media-thumbnail-vertical">
-                        <video class="music-player video-player {% if not song.video_url %}no-media{% endif %}" controls preload="metadata" src="{{ song.video_url }}" {% if not song.video_url %}disabled{% endif %}>
-                            <source src="{{ song.video_url }}" type="video/mp4">
-                            Browser Anda tidak mendukung tag video.
-                        </video>
+                <hr>
+                
+                <h2 class="list-title">Video</h2>
+                <div class="video-list">
+                    {% for song in music_library[3:] %}
+                    <div class="media-card-vertical">
+                        <div class="media-thumbnail-vertical">
+                            <video class="music-player video-player {% if not song.video_url %}no-media{% endif %}" controls preload="metadata" src="{{ song.video_url }}" {% if not song.video_url %}disabled{% endif %}>
+                                <source src="{{ song.video_url }}" type="video/mp4">
+                                Browser Anda tidak mendukung tag video.
+                            </video>
+                        </div>
+                        <div class="media-details-vertical">
+                            <h3 class="song-title-vertical">{{ song.title }}</h3>
+                            <p class="artist-name-vertical">{{ song.artist }}</p>
+                            <small class="upload-date">Diunggah: {{ song.date_uploaded.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        <div class="media-actions">
+                            {% if current_user == song.user or current_user.is_admin %}
+                            <form action="{{ url_for('delete_music', music_id=song.id) }}" method="POST" style="display:inline-block;">
+                                <button type="submit" class="btn btn-danger delete-button" onclick="return confirm('Apakah Anda yakin ingin menghapus media ini?')">Hapus</button>
+                            </form>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="media-details-vertical">
-                        <h3 class="song-title-vertical">{{ song.title }}</h3>
-                        <p class="artist-name-vertical">{{ song.artist }}</p>
-                        <small class="upload-date">Diunggah: {{ song.date_uploaded.strftime('%Y-%m-%d %H:%M') }}</small>
-                    </div>
-                    <div class="media-actions">
-                        {% if current_user == song.user or current_user.is_admin %}
-                        <form action="{{ url_for('delete_music', music_id=song.id) }}" method="POST" style="display:inline-block;">
-                            <button type="submit" class="btn btn-danger delete-button" onclick="return confirm('Apakah Anda yakin ingin menghapus media ini?')">Hapus</button>
-                        </form>
-                        {% endif %}
-                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
             
             {% if not music_library %}
