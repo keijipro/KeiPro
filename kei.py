@@ -1085,3 +1085,8 @@ def choose_plan(plan):
     else:
         flash('Paket tidak valid.', 'danger')
         return redirect(url_for('show_plans'))
+        
+@app.route('/ping', methods=['GET'])
+def ping():
+    return jsonify({"status": "Anjay"})
+    
