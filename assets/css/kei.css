@@ -223,7 +223,7 @@ a:hover {
 .image-preview img {
     width: 100%;
     height: auto;
-    max-height: 160px;
+    max-height: 250px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 0.6rem;
