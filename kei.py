@@ -279,7 +279,6 @@ def google_verification():
     return send_from_directory('assets', 'google78b016121e7d19dc.html')
     
 @app.route('/')
-@login_required
 def HomeKei():
     latest_todos = Todo.query.filter_by(user_id=current_user.id).order_by(Todo.date_created.desc()).limit(3).all()
     latest_images = GalleryImage.query.filter_by(user_id=current_user.id).order_by(GalleryImage.date_uploaded.desc()).limit(5).all()
